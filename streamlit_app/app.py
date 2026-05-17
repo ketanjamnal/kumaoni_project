@@ -438,7 +438,7 @@ if not models_loaded:
 col_in, col_out = st.columns([1, 1], gap="large")
 
 with col_in:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
+    #st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-title">Input Text</div>', unsafe_allow_html=True)
 
     # Session state for prefill
@@ -466,7 +466,7 @@ with col_in:
             #st.session_state.english_input = eng
             st.rerun()
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    #st.markdown('</div>', unsafe_allow_html=True)
 
 # ── Output section ────────────────────────────────────────────────────────────
 with col_out:
