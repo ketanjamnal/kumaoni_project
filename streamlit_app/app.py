@@ -444,8 +444,8 @@ with col_in:
     # Session state for prefill
     if "kumaoni_input" not in st.session_state:
         st.session_state.kumaoni_input = ""
-    if "english_input" not in st.session_state:
-        st.session_state.english_input = ""
+    #if "english_input" not in st.session_state:
+    #   st.session_state.english_input = ""
 
     kumaoni = st.text_area(
         "Kumaoni Text",
@@ -454,22 +454,16 @@ with col_in:
         height=100,
         key="kumaoni_ta",
     )
-    english = st.text_area(
-        "English Translation (optional — helps the model)",
-        value=st.session_state.english_input,
-        placeholder="e.g. i am happy and feeling great",
-        height=80,
-        key="english_ta",
-    )
+    english = ""
 
     run = st.button("Analyse →", disabled=not models_loaded)
 
     st.markdown("---")
     st.markdown('<div class="card-title">Try an example</div>', unsafe_allow_html=True)
-    for kum, eng in EXAMPLES:
+    for kum, _ in EXAMPLES:
         if st.button(f"📝 {kum}", key=f"ex_{kum}"):
             st.session_state.kumaoni_input = kum
-            st.session_state.english_input = eng
+            #st.session_state.english_input = eng
             st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
