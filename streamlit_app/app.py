@@ -270,31 +270,71 @@ def rule_based_features(text: str) -> dict:
         features[feat_name] = int(bool(word_set & kw_set))
     return features
 
+from pathlib import Path
 
 @st.cache_resource(show_spinner=False)
 def load_models():
     """Load all pkl artifacts. Returns None on failure."""
-    model_dir = os.environ.get("MODEL_DIR", "models")
+
+    # directory of current script
+    BASE_DIR = Path(__file__).resolve().parent
+
+    # models folder inside app/
+    model_dir = BASE_DIR / "models"
+
     required = [
-        "sentiment_model.pkl", "emotion_model.pkl",
-        "word_tfidf.pkl", "char_tfidf.pkl",
-        "rule_scaler.pkl", "sentiment_encoder.pkl", "emotion_encoder.pkl",
+        "sentiment_model.pkl",
+        "emotion_model.pkl",
+        "word_tfidf.pkl",
+        "char_tfidf.pkl",
+        "rule_scaler.pkl",
+        "sentiment_encoder.pkl",
+        "emotion_encoder.pkl",
     ]
-    missing = [f for f in required if not os.path.exists(os.path.join(model_dir, f))]
+
+    missing = [f for f in required if not (model_dir / f).exists()]
+
     if missing:
         return None, missing
+
     try:
         return {
-            "sent_clf":    joblib.load(os.path.join(model_dir, "sentiment_model.pkl")),
-            "emo_clf":     joblib.load(os.path.join(model_dir, "emotion_model.pkl")),
-            "word_vec":    joblib.load(os.path.join(model_dir, "word_tfidf.pkl")),
-            "char_vec":    joblib.load(os.path.join(model_dir, "char_tfidf.pkl")),
-            "scaler":      joblib.load(os.path.join(model_dir, "rule_scaler.pkl")),
-            "sent_enc":    joblib.load(os.path.join(model_dir, "sentiment_encoder.pkl")),
-            "emo_enc":     joblib.load(os.path.join(model_dir, "emotion_encoder.pkl")),
+            "sent_clf": joblib.load(model_dir / "sentiment_model.pkl"),
+            "emo_clf": joblib.load(model_dir / "emotion_model.pkl"),
+            "word_vec": joblib.load(model_dir / "word_tfidf.pkl"),
+            "char_vec": joblib.load(model_dir / "char_tfidf.pkl"),
+            "scaler": joblib.load(model_dir / "rule_scaler.pkl"),
+            "sent_enc": joblib.load(model_dir / "sentiment_encoder.pkl"),
+            "emo_enc": joblib.load(model_dir / "emotion_encoder.pkl"),
         }, []
+
     except Exception as e:
         return None, [str(e)]
+    
+# @st.cache_resource(show_spinner=False)
+# def load_models():
+#     """Load all pkl artifacts. Returns None on failure."""
+#     model_dir = os.environ.get("MODEL_DIR", "models")
+#     required = [
+#         "sentiment_model.pkl", "emotion_model.pkl",
+#         "word_tfidf.pkl", "char_tfidf.pkl",
+#         "rule_scaler.pkl", "sentiment_encoder.pkl", "emotion_encoder.pkl",
+#     ]
+#     missing = [f for f in required if not os.path.exists(os.path.join(model_dir, f))]
+#     if missing:
+#         return None, missing
+#     try:
+#         return {
+#             "sent_clf":    joblib.load(os.path.join(model_dir, "sentiment_model.pkl")),
+#             "emo_clf":     joblib.load(os.path.join(model_dir, "emotion_model.pkl")),
+#             "word_vec":    joblib.load(os.path.join(model_dir, "word_tfidf.pkl")),
+#             "char_vec":    joblib.load(os.path.join(model_dir, "char_tfidf.pkl")),
+#             "scaler":      joblib.load(os.path.join(model_dir, "rule_scaler.pkl")),
+#             "sent_enc":    joblib.load(os.path.join(model_dir, "sentiment_encoder.pkl")),
+#             "emo_enc":     joblib.load(os.path.join(model_dir, "emotion_encoder.pkl")),
+#         }, []
+#     except Exception as e:
+#         return None, [str(e)]
 
 
 def predict(models, kumaoni_text: str, english_text: str = "") -> dict:
